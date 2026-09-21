@@ -1,0 +1,4007 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+<title>Personal ID Card Generator</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+<style>
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+:root{
+    --primary:#2563eb;
+    --secondary:#06b6d4;
+    --bg:#eef2f7;
+    --white:#fff;
+    --text:#0f172a;
+    --muted:#64748b;
+    --border:#e2e8f0;
+    --danger:#dc2626;
+    --success:#16a34a;
+}
+
+body{
+    font-family:Inter,Arial,sans-serif;
+    background:var(--bg);
+    color:var(--text);
+}
+
+button,
+input,
+textarea,
+select{
+    font-family:inherit;
+}
+
+button{
+    border:0;
+    border-radius:10px;
+    padding:10px 13px;
+    font-size:12px;
+    font-weight:700;
+    cursor:pointer;
+    transition:.2s;
+}
+
+button:hover{
+    transform:translateY(-1px);
+}
+
+header{
+    background:linear-gradient(135deg,#0f172a,#1d4ed8);
+    color:white;
+    padding:16px 22px;
+    position:sticky;
+    top:0;
+    z-index:100;
+    box-shadow:0 5px 25px rgba(0,0,0,.15);
+}
+
+.header{
+    max-width:1500px;
+    margin:auto;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:15px;
+}
+
+.brand{
+    display:flex;
+    align-items:center;
+    gap:12px;
+}
+
+.brand-icon{
+    width:46px;
+    height:46px;
+    display:grid;
+    place-items:center;
+    background:linear-gradient(135deg,#38bdf8,#2563eb);
+    border-radius:13px;
+    font-size:23px;
+}
+
+.brand h1{
+    font-size:20px;
+}
+
+.brand p{
+    font-size:11px;
+    color:#cbd5e1;
+    margin-top:3px;
+}
+
+.header-buttons{
+    display:flex;
+    gap:7px;
+    flex-wrap:wrap;
+}
+
+.container{
+    max-width:1500px;
+    margin:auto;
+    padding:25px;
+}
+
+.layout{
+    display:grid;
+    grid-template-columns:430px 1fr;
+    gap:25px;
+}
+
+.editor{
+    background:white;
+    border:1px solid var(--border);
+    border-radius:18px;
+    padding:22px;
+    box-shadow:0 10px 35px rgba(15,23,42,.06);
+}
+
+.editor-title{
+    font-size:18px;
+    font-weight:800;
+    margin-bottom:20px;
+}
+
+.section{
+    border-bottom:1px solid var(--border);
+    padding-bottom:20px;
+    margin-bottom:20px;
+}
+
+.section:last-child{
+    border-bottom:0;
+}
+
+.section-title{
+    font-size:12px;
+    text-transform:uppercase;
+    font-weight:800;
+    color:#475569;
+    margin-bottom:14px;
+}
+
+.form-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:11px;
+}
+
+.field{
+    margin-bottom:9px;
+}
+
+.full{
+    grid-column:1/-1;
+}
+
+label{
+    display:block;
+    font-size:11px;
+    font-weight:700;
+    color:#475569;
+    margin-bottom:5px;
+}
+
+input,
+textarea,
+select{
+    width:100%;
+    border:1px solid var(--border);
+    border-radius:10px;
+    padding:10px 11px;
+    outline:none;
+    font-size:12px;
+    background:white;
+}
+
+textarea{
+    min-height:75px;
+    resize:vertical;
+}
+
+input:focus,
+textarea:focus,
+select:focus{
+    border-color:var(--primary);
+    box-shadow:0 0 0 3px rgba(37,99,235,.1);
+}
+
+input[type=color]{
+    height:42px;
+    padding:4px;
+}
+
+input[type=file]{
+    padding:8px;
+}
+
+.help{
+    display:block;
+    margin-top:5px;
+    color:#94a3b8;
+    font-size:10px;
+    line-height:1.4;
+}
+
+.btn-primary{
+    color:white;
+    background:linear-gradient(135deg,#2563eb,#06b6d4);
+}
+
+.btn-dark{
+    color:white;
+    background:#0f172a;
+}
+
+.btn-light{
+    color:#334155;
+    background:#f1f5f9;
+}
+
+.btn-success{
+    color:#166534;
+    background:#dcfce7;
+}
+
+.btn-danger{
+    color:#b91c1c;
+    background:#fee2e2;
+}
+
+.button-row{
+    display:flex;
+    gap:7px;
+    flex-wrap:wrap;
+}
+
+.button-row button{
+    flex:1;
+}
+
+/* DOCUMENT UPLOAD */
+
+.document-box{
+    border:1px solid var(--border);
+    border-radius:14px;
+    padding:13px;
+    margin-bottom:12px;
+    background:#f8fafc;
+}
+
+.document-title{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    margin-bottom:10px;
+}
+
+.document-title strong{
+    font-size:12px;
+}
+
+.document-preview{
+    display:none;
+    margin-top:10px;
+    position:relative;
+}
+
+.document-preview img{
+    width:100%;
+    max-height:180px;
+    object-fit:contain;
+    border-radius:10px;
+    background:#e2e8f0;
+    border:1px solid var(--border);
+}
+
+.document-status{
+    font-size:10px;
+    margin-top:6px;
+    color:#64748b;
+}
+
+.document-actions{
+    display:flex;
+    gap:5px;
+    margin-top:8px;
+}
+
+.document-actions button{
+    flex:1;
+    padding:7px;
+    font-size:10px;
+}
+
+/* PIN */
+
+.pin-box{
+    background:#eff6ff;
+    border:1px solid #bfdbfe;
+    padding:12px;
+    border-radius:12px;
+}
+
+.pin-box p{
+    font-size:10px;
+    color:#475569;
+    line-height:1.5;
+    margin-bottom:9px;
+}
+
+/* TEMPLATES */
+
+.templates{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:8px;
+}
+
+.template{
+    height:65px;
+    border-radius:11px;
+    border:2px solid var(--border);
+    cursor:pointer;
+    position:relative;
+    overflow:hidden;
+}
+
+.template.active{
+    border-color:#2563eb;
+    box-shadow:0 0 0 2px rgba(37,99,235,.12);
+}
+
+.template span{
+    position:absolute;
+    bottom:6px;
+    left:7px;
+    color:white;
+    font-size:9px;
+    font-weight:800;
+}
+
+.temp1{background:linear-gradient(135deg,#2563eb,#06b6d4);}
+.temp2{background:linear-gradient(135deg,#111827,#475569);}
+.temp3{background:linear-gradient(135deg,#7c3aed,#ec4899);}
+.temp4{background:linear-gradient(135deg,#059669,#14b8a6);}
+.temp5{background:linear-gradient(135deg,#ea580c,#f59e0b);}
+.temp6{background:linear-gradient(135deg,#be123c,#fb7185);}
+
+/* SAVED */
+
+.saved-list{
+    max-height:300px;
+    overflow:auto;
+    display:grid;
+    gap:8px;
+}
+
+.saved-card{
+    border:1px solid var(--border);
+    border-radius:11px;
+    padding:10px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+}
+
+.saved-card strong{
+    display:block;
+    font-size:12px;
+}
+
+.saved-card small{
+    color:var(--muted);
+    font-size:10px;
+}
+
+.saved-actions{
+    display:flex;
+    gap:4px;
+}
+
+.saved-actions button{
+    padding:6px 8px;
+    font-size:10px;
+}
+
+/* PREVIEW */
+
+.preview{
+    background:#cbd5e1;
+    border-radius:18px;
+    padding:30px;
+    min-height:850px;
+    overflow:auto;
+}
+
+.preview-top{
+    max-width:950px;
+    margin:0 auto 30px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.preview-top h2{
+    font-size:18px;
+}
+
+.zoom{
+    display:flex;
+    gap:5px;
+}
+
+.zoom button{
+    padding:7px 10px;
+}
+
+.cards{
+    display:flex;
+    gap:35px;
+    justify-content:center;
+    align-items:flex-start;
+    flex-wrap:wrap;
+    transform-origin:top center;
+}
+
+.id-card{
+    width:340px;
+    height:540px;
+    flex:none;
+    position:relative;
+    overflow:hidden;
+    border-radius:20px;
+    background:white;
+    box-shadow:0 20px 50px rgba(0,0,0,.22);
+}
+
+/* FRONT */
+
+.card-gradient{
+    position:absolute;
+    inset:0;
+    background:linear-gradient(135deg,#2563eb,#06b6d4);
+}
+
+.circle{
+    position:absolute;
+    border-radius:50%;
+    background:rgba(255,255,255,.09);
+}
+
+.circle.one{
+    width:280px;
+    height:280px;
+    right:-140px;
+    top:-110px;
+}
+
+.circle.two{
+    width:220px;
+    height:220px;
+    left:-120px;
+    bottom:-90px;
+}
+
+.front-content{
+    position:relative;
+    z-index:3;
+    height:100%;
+    padding:24px;
+    color:white;
+}
+
+.personal-header{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:20px;
+}
+
+.personal-logo{
+    width:48px;
+    height:48px;
+    border-radius:11px;
+    object-fit:contain;
+    background:white;
+    display:none;
+}
+
+.card-title{
+    font-size:17px;
+    font-weight:800;
+    line-height:1.2;
+}
+
+.card-subtitle{
+    font-size:9px;
+    opacity:.8;
+    margin-top:4px;
+}
+
+.photo-box{
+    width:145px;
+    height:170px;
+    background:white;
+    padding:5px;
+    border-radius:16px;
+    margin:10px auto 18px;
+    box-shadow:0 10px 25px rgba(0,0,0,.15);
+}
+
+.personal-photo{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    border-radius:12px;
+    background:#e2e8f0;
+}
+
+.personal-name{
+    text-align:center;
+    font-size:23px;
+    font-weight:800;
+}
+
+.personal-role{
+    text-align:center;
+    font-size:11px;
+    opacity:.9;
+    margin-top:5px;
+}
+
+.personal-number{
+    text-align:center;
+    font-size:11px;
+    letter-spacing:1px;
+    font-weight:700;
+    margin-top:9px;
+}
+
+.front-info{
+    position:absolute;
+    left:24px;
+    right:24px;
+    bottom:20px;
+    display:flex;
+    justify-content:space-between;
+    align-items:end;
+}
+
+.issue-info{
+    font-size:8px;
+    line-height:1.7;
+    opacity:.9;
+}
+
+.front-qr{
+    background:white;
+    padding:5px;
+    border-radius:8px;
+}
+
+.front-qr canvas,
+.front-qr img{
+    width:55px!important;
+    height:55px!important;
+}
+
+/* BACK */
+
+.back-card{
+    background:white;
+}
+
+.back-top{
+    height:105px;
+    position:relative;
+    overflow:hidden;
+    background:linear-gradient(135deg,#2563eb,#06b6d4);
+}
+
+.back-brand{
+    position:relative;
+    z-index:3;
+    padding:22px;
+    color:white;
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+.back-logo{
+    width:45px;
+    height:45px;
+    border-radius:10px;
+    background:white;
+    object-fit:contain;
+    display:none;
+}
+
+.back-brand-name{
+    font-size:16px;
+    font-weight:800;
+}
+
+.back-body{
+    padding:20px 23px;
+}
+
+.back-heading{
+    font-size:12px;
+    font-weight:800;
+    margin-bottom:12px;
+}
+
+.info-list{
+    display:grid;
+    gap:9px;
+}
+
+.info-row{
+    display:flex;
+    align-items:flex-start;
+    gap:9px;
+}
+
+.info-icon{
+    width:25px;
+    height:25px;
+    border-radius:7px;
+    display:grid;
+    place-items:center;
+    background:#eff6ff;
+    color:#2563eb;
+    font-size:11px;
+    flex:none;
+}
+
+.info-text{
+    font-size:10px;
+    color:#475569;
+    line-height:1.4;
+    word-break:break-word;
+}
+
+.info-label{
+    font-size:8px;
+    color:#94a3b8;
+    display:block;
+    margin-bottom:1px;
+}
+
+.website-link{
+    color:#2563eb;
+    text-decoration:none;
+    font-weight:600;
+    word-break:break-all;
+}
+
+.back-note{
+    margin-top:15px;
+    background:#f8fafc;
+    border-radius:11px;
+    padding:10px;
+    font-size:8px;
+    color:#64748b;
+    line-height:1.55;
+}
+
+.back-qr{
+    text-align:center;
+    margin-top:13px;
+}
+
+.back-qr-label{
+    font-size:7px;
+    color:#94a3b8;
+    margin-bottom:4px;
+}
+
+.back-qr-box{
+    display:inline-block;
+    background:white;
+    padding:5px;
+    border:1px solid #e2e8f0;
+    border-radius:8px;
+}
+
+.back-qr-box canvas,
+.back-qr-box img{
+    width:70px!important;
+    height:70px!important;
+}
+
+.back-footer{
+    position:absolute;
+    left:22px;
+    right:22px;
+    bottom:12px;
+    text-align:center;
+    font-size:7px;
+    color:#94a3b8;
+}
+
+/* STATUS */
+
+.status{
+    position:fixed;
+    right:20px;
+    bottom:20px;
+    background:#0f172a;
+    color:white;
+    padding:11px 15px;
+    border-radius:10px;
+    font-size:11px;
+    opacity:0;
+    transform:translateY(15px);
+    transition:.25s;
+    z-index:500;
+    pointer-events:none;
+}
+
+.status.show{
+    opacity:1;
+    transform:translateY(0);
+}
+
+/* DOCUMENT VIEWER */
+
+#documentViewer{
+    display:none;
+    position:fixed;
+    inset:0;
+    z-index:1000;
+    background:#f1f5f9;
+    overflow:auto;
+}
+
+.viewer-header{
+    position:sticky;
+    top:0;
+    z-index:10;
+    background:#0f172a;
+    color:white;
+    padding:15px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+}
+
+.viewer-title{
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+.viewer-title-icon{
+    width:40px;
+    height:40px;
+    display:grid;
+    place-items:center;
+    background:#1d4ed8;
+    border-radius:10px;
+}
+
+.viewer-title h2{
+    font-size:16px;
+}
+
+.viewer-title p{
+    font-size:9px;
+    color:#94a3b8;
+    margin-top:2px;
+}
+
+.viewer-content{
+    max-width:850px;
+    margin:auto;
+    padding:25px 15px 50px;
+}
+
+.viewer-security{
+    background:#fff7ed;
+    border:1px solid #fed7aa;
+    border-radius:12px;
+    padding:12px;
+    margin-bottom:20px;
+    font-size:10px;
+    color:#9a3412;
+    line-height:1.5;
+}
+
+.viewer-doc{
+    background:white;
+    border-radius:18px;
+    padding:18px;
+    margin-bottom:20px;
+    box-shadow:0 10px 30px rgba(15,23,42,.08);
+}
+
+.viewer-doc h3{
+    font-size:15px;
+    margin-bottom:13px;
+}
+
+.viewer-image-wrap{
+    background:#e2e8f0;
+    border-radius:12px;
+    padding:10px;
+    text-align:center;
+}
+
+.viewer-image-wrap img{
+    max-width:100%;
+    max-height:700px;
+    border-radius:8px;
+    object-fit:contain;
+}
+
+.no-document{
+    padding:40px 20px;
+    text-align:center;
+    color:#64748b;
+    font-size:12px;
+}
+
+/* PIN MODAL */
+
+#pinModal{
+    display:none;
+    position:fixed;
+    inset:0;
+    z-index:2000;
+    background:rgba(15,23,42,.75);
+    backdrop-filter:blur(7px);
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+}
+
+.pin-modal{
+    width:min(390px,100%);
+    background:white;
+    border-radius:20px;
+    padding:25px;
+    box-shadow:0 25px 70px rgba(0,0,0,.3);
+    text-align:center;
+}
+
+.pin-modal-icon{
+    width:60px;
+    height:60px;
+    border-radius:18px;
+    background:#eff6ff;
+    display:grid;
+    place-items:center;
+    margin:0 auto 15px;
+    font-size:28px;
+}
+
+.pin-modal h2{
+    font-size:18px;
+    margin-bottom:7px;
+}
+
+.pin-modal p{
+    color:#64748b;
+    font-size:11px;
+    line-height:1.5;
+    margin-bottom:15px;
+}
+
+.pin-modal input{
+    text-align:center;
+    font-size:20px;
+    letter-spacing:6px;
+}
+
+.pin-error{
+    display:none;
+    color:#dc2626;
+    font-size:10px;
+    margin-top:8px;
+}
+
+@media(max-width:1050px){
+    .layout{
+        grid-template-columns:1fr;
+    }
+}
+
+@media(max-width:700px){
+    header{
+        padding:13px;
+    }
+
+    .header{
+        align-items:flex-start;
+        flex-direction:column;
+    }
+
+    .container{
+        padding:12px;
+    }
+
+    .editor{
+        padding:16px;
+    }
+
+    .preview{
+        padding:15px;
+    }
+
+    .form-grid{
+        grid-template-columns:1fr;
+    }
+
+    .full{
+        grid-column:auto;
+    }
+
+    .cards{
+        transform:scale(.78);
+        margin-bottom:-100px;
+    }
+
+    .viewer-header{
+        align-items:flex-start;
+    }
+}
+
+@media print{
+    @page{
+        size:A4;
+        margin:15mm;
+    }
+
+    body{
+        background:white;
+    }
+
+    header,
+    .editor,
+    .preview-top{
+        display:none!important;
+    }
+
+    .container{
+        padding:0;
+        margin:0;
+    }
+
+    .layout{
+        display:block;
+    }
+
+    .preview{
+        padding:0;
+        background:white;
+        overflow:visible;
+        min-height:0;
+    }
+
+    .cards{
+        transform:none!important;
+        gap:15mm;
+        flex-wrap:nowrap;
+        justify-content:center;
+    }
+
+    .id-card{
+        box-shadow:none;
+        border:1px solid #ddd;
+    }
+
+    #documentViewer,
+    #pinModal{
+        display:none!important;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<div class="header">
+
+<div class="brand">
+<div class="brand-icon">🪪</div>
+<div>
+<h1>Personal ID Card Generator</h1>
+<p>Personal card + private document QR viewer</p>
+</div>
+</div>
+
+<div class="header-buttons">
+<button class="btn-light" onclick="saveCard()">💾 Save</button>
+<button class="btn-success" onclick="downloadFront()">⬇ Front</button>
+<button class="btn-success" onclick="downloadBack()">⬇ Back</button>
+<button class="btn-dark" onclick="printCard()">🖨 Print / PDF</button>
+</div>
+
+</div>
+</header>
+
+
+<div class="container">
+
+<div class="layout">
+
+<!-- ================= EDITOR ================= -->
+
+<div class="editor">
+
+<div class="editor-title">
+Personal ID Card Details
+</div>
+
+
+<!-- PERSONAL DETAILS -->
+
+<div class="section">
+
+<div class="section-title">
+👤 Personal Details
+</div>
+
+<div class="form-grid">
+
+<div class="field full">
+<label>Full Name</label>
+<input id="fullName"
+value="Saksham Shrestha"
+oninput="updatePreview()">
+</div>
+
+<div class="field">
+<label>Personal ID</label>
+<input id="personalId"
+value="PID-001"
+oninput="updatePreview()">
+</div>
+
+<div class="field">
+<label>Profession / Role</label>
+<input id="profession"
+value="Software Developer"
+oninput="updatePreview()">
+</div>
+
+<div class="field">
+<label>Date of Birth</label>
+<input id="dob"
+type="date"
+onchange="updatePreview()">
+</div>
+
+<div class="field">
+<label>Gender</label>
+<select id="gender" onchange="updatePreview()">
+<option>Male</option>
+<option>Female</option>
+<option>Other</option>
+<option>Prefer not to say</option>
+</select>
+</div>
+
+<div class="field">
+<label>Blood Group</label>
+<select id="bloodGroup" onchange="updatePreview()">
+<option value="">Not specified</option>
+<option>A+</option>
+<option>A-</option>
+<option>B+</option>
+<option>B-</option>
+<option>AB+</option>
+<option>AB-</option>
+<option>O+</option>
+<option>O-</option>
+</select>
+</div>
+
+<div class="field">
+<label>Nationality</label>
+<input id="nationality"
+value="Nepali"
+oninput="updatePreview()">
+</div>
+
+<div class="field full">
+<label>Profile Photo</label>
+<input id="photoInput"
+type="file"
+accept="image/*"
+onchange="uploadPhoto(event)">
+</div>
+
+</div>
+</div>
+
+
+<!-- CONTACT -->
+
+<div class="section">
+
+<div class="section-title">
+📞 Contact Information
+</div>
+
+<div class="form-grid">
+
+<div class="field">
+<label>Phone</label>
+<input id="phone"
+value="+977 98XXXXXXXX"
+oninput="updatePreview()">
+</div>
+
+<div class="field">
+<label>Email</label>
+<input id="email"
+value="saksham@example.com"
+oninput="updatePreview()">
+</div>
+
+<div class="field full">
+<label>Address</label>
+<input id="address"
+value="Lalitpur, Nepal"
+oninput="updatePreview()">
+</div>
+
+<div class="field full">
+
+<label>🌐 Website Link</label>
+
+<input id="website"
+type="url"
+value="https://sakshamstha.com.np"
+placeholder="https://example.com"
+oninput="updatePreview()">
+
+<span class="help">
+Website is displayed on the ID card. The QR does NOT expose these personal details.
+</span>
+
+<button
+type="button"
+class="btn-primary"
+style="width:100%;margin-top:7px;"
+onclick="openWebsite()">
+🌐 Open Website
+</button>
+
+</div>
+
+</div>
+</div>
+
+
+<!-- FAMILY -->
+
+<div class="section">
+
+<div class="section-title">
+👨‍👩‍👦 Family & Emergency
+</div>
+
+<div class="form-grid">
+
+<div class="field">
+<label>Father's Name</label>
+<input id="fatherName"
+placeholder="Father's name"
+oninput="updatePreview()">
+</div>
+
+<div class="field">
+<label>Mother's Name</label>
+<input id="motherName"
+placeholder="Mother's name"
+oninput="updatePreview()">
+</div>
+
+<div class="field">
+<label>Emergency Contact</label>
+<input id="emergency"
+placeholder="Emergency person"
+oninput="updatePreview()">
+</div>
+
+<div class="field">
+<label>Emergency Phone</label>
+<input id="emergencyPhone"
+placeholder="+977..."
+oninput="updatePreview()">
+</div>
+
+</div>
+</div>
+
+
+<!-- VALIDITY -->
+
+<div class="section">
+
+<div class="section-title">
+📅 Card Validity
+</div>
+
+<div class="form-grid">
+
+<div class="field">
+<label>Issue Date</label>
+<input id="issueDate"
+type="date"
+onchange="updatePreview()">
+</div>
+
+<div class="field">
+<label>Expiry Date</label>
+<input id="expiryDate"
+type="date"
+onchange="updatePreview()">
+</div>
+
+</div>
+</div>
+
+
+<!-- DOCUMENT VAULT -->
+
+<div class="section">
+
+<div class="section-title">
+🔐 Private Document Vault
+</div>
+
+<div class="pin-box">
+
+<p>
+Paste the public URL of the page or image that should open when the QR is scanned.
+Files selected below are stored only in this browser, so upload them to a public
+website or image host first.
+</p>
+
+<label>QR destination URL</label>
+
+<input
+id="qrDestination"
+type="url"
+placeholder="https://example.com/document-page-or-image.jpg"
+oninput="updateQR()">
+
+<span class="help">
+Use a public HTTPS link. The QR will open this exact page or image on any phone.
+</span>
+
+<br><br>
+
+<label>Document Viewer PIN</label>
+
+<input
+id="documentPin"
+type="password"
+inputmode="numeric"
+maxlength="8"
+placeholder="Enter PIN"
+oninput="updateQR()">
+
+<span class="help">
+This PIN protects the viewer in this local prototype.
+For real identity documents, use server-side authentication.
+</span>
+
+</div>
+
+<br>
+
+
+<!-- DRIVING LICENCE -->
+
+<div class="document-box">
+
+<div class="document-title">
+
+<strong>🚗 Driving Licence</strong>
+
+<span id="licenseStatus"
+style="font-size:10px;color:#64748b;">
+Not uploaded
+</span>
+
+</div>
+
+<input
+id="licenseInput"
+type="file"
+accept="image/*"
+onchange="uploadDocument(event,'license')">
+
+<div
+id="licensePreview"
+class="document-preview">
+
+<img id="licenseImage">
+
+<div class="document-actions">
+
+<button
+class="btn-light"
+onclick="removeDocument('license')">
+Remove
+</button>
+
+</div>
+
+</div>
+
+<div class="document-status">
+Only this image will be displayed in the QR document viewer.
+</div>
+
+</div>
+
+
+<!-- NATIONAL ID -->
+
+<div class="document-box">
+
+<div class="document-title">
+
+<strong>🪪 National ID</strong>
+
+<span id="nationalStatus"
+style="font-size:10px;color:#64748b;">
+Not uploaded
+</span>
+
+</div>
+
+<input
+id="nationalInput"
+type="file"
+accept="image/*"
+onchange="uploadDocument(event,'national')">
+
+<div
+id="nationalPreview"
+class="document-preview">
+
+<img id="nationalImage">
+
+<div class="document-actions">
+
+<button
+class="btn-light"
+onclick="removeDocument('national')">
+Remove
+</button>
+
+</div>
+
+</div>
+
+<div class="document-status">
+Only this image will be displayed in the QR document viewer.
+</div>
+
+</div>
+
+</div>
+
+
+<!-- BRANDING -->
+
+<div class="section">
+
+<div class="section-title">
+🎨 Card Branding
+</div>
+
+<div class="form-grid">
+
+<div class="field full">
+<label>Card Title</label>
+<input id="cardTitle"
+value="PERSONAL IDENTIFICATION CARD"
+oninput="updatePreview()">
+</div>
+
+<div class="field full">
+<label>Subtitle</label>
+<input id="cardSubtitle"
+value="PERSONAL IDENTITY • DOCUMENT ACCESS"
+oninput="updatePreview()">
+</div>
+
+<div class="field full">
+<label>Logo / Personal Symbol</label>
+<input id="logoInput"
+type="file"
+accept="image/*"
+onchange="uploadLogo(event)">
+</div>
+
+<div class="field">
+<label>Primary Color</label>
+<input id="primaryColor"
+type="color"
+value="#2563eb"
+onchange="applyCustomColors()">
+</div>
+
+<div class="field">
+<label>Secondary Color</label>
+<input id="secondaryColor"
+type="color"
+value="#06b6d4"
+onchange="applyCustomColors()">
+</div>
+
+</div>
+</div>
+
+
+<!-- TEMPLATES -->
+
+<div class="section">
+
+<div class="section-title">
+🖌️ Card Templates
+</div>
+
+<div class="templates">
+
+<div class="template temp1 active"
+onclick="setTemplate(1,this)">
+<span>OCEAN</span>
+</div>
+
+<div class="template temp2"
+onclick="setTemplate(2,this)">
+<span>DARK</span>
+</div>
+
+<div class="template temp3"
+onclick="setTemplate(3,this)">
+<span>ROYAL</span>
+</div>
+
+<div class="template temp4"
+onclick="setTemplate(4,this)">
+<span>GREEN</span>
+</div>
+
+<div class="template temp5"
+onclick="setTemplate(5,this)">
+<span>SUNSET</span>
+</div>
+
+<div class="template temp6"
+onclick="setTemplate(6,this)">
+<span>ROSE</span>
+</div>
+
+</div>
+</div>
+
+
+<!-- BACK MESSAGE -->
+
+<div class="section">
+
+<div class="section-title">
+📄 Back Card Message
+</div>
+
+<div class="field">
+
+<label>Return / Safety Message</label>
+
+<textarea id="returnMessage"
+oninput="updatePreview()">If this card is found, please contact the card holder using the information provided.</textarea>
+
+</div>
+
+<div class="field">
+
+<label>Additional Information</label>
+
+<textarea id="additionalInfo"
+oninput="updatePreview()">This card contains personal identification information. Please handle responsibly.</textarea>
+
+</div>
+
+</div>
+
+
+<!-- ACTIONS -->
+
+<div class="section">
+
+<div class="section-title">
+⚡ Actions
+</div>
+
+<div class="button-row">
+
+<button
+class="btn-primary"
+onclick="saveCard()">
+💾 Save Card
+</button>
+
+<button
+class="btn-light"
+onclick="newCard()">
+➕ New Card
+</button>
+
+</div>
+
+<br>
+
+<div class="button-row">
+
+<button
+class="btn-success"
+onclick="downloadFront()">
+📸 Front PNG
+</button>
+
+<button
+class="btn-success"
+onclick="downloadBack()">
+📸 Back PNG
+</button>
+
+</div>
+
+<br>
+
+<div class="button-row">
+
+<button
+class="btn-dark"
+onclick="printCard()">
+🖨 Print / PDF
+</button>
+
+<button
+class="btn-danger"
+onclick="clearSaved()">
+🗑 Clear Saved
+</button>
+
+</div>
+
+</div>
+
+
+<!-- SAVED CARDS -->
+
+<div class="section">
+
+<div class="section-title">
+💾 Saved Personal Cards
+</div>
+
+<div id="savedList"
+class="saved-list">
+</div>
+
+</div>
+
+</div>
+
+
+<!-- ================= PREVIEW ================= -->
+
+<div class="preview">
+
+<div class="preview-top">
+
+<h2>
+Live Personal ID Preview
+</h2>
+
+<div class="zoom">
+
+<button
+class="btn-light"
+onclick="changeZoom(-.1)">
+➖
+</button>
+
+<button
+class="btn-light"
+onclick="resetZoom()">
+100%
+</button>
+
+<button
+class="btn-light"
+onclick="changeZoom(.1)">
+➕
+</button>
+
+</div>
+
+</div>
+
+
+<div id="cards" class="cards">
+
+
+<!-- FRONT CARD -->
+
+<div id="frontCard" class="id-card">
+
+<div id="frontGradient"
+class="card-gradient">
+</div>
+
+<div class="circle one"></div>
+<div class="circle two"></div>
+
+<div class="front-content">
+
+<div class="personal-header">
+
+<img
+id="frontLogo"
+class="personal-logo">
+
+<div>
+
+<div
+id="previewTitle"
+class="card-title">
+PERSONAL IDENTIFICATION CARD
+</div>
+
+<div
+id="previewSubtitle"
+class="card-subtitle">
+PERSONAL IDENTITY • DOCUMENT ACCESS
+</div>
+
+</div>
+
+</div>
+
+
+<div class="photo-box">
+
+<img
+id="previewPhoto"
+class="personal-photo"
+src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='350'%3E%3Crect width='100%25' height='100%25' fill='%23e2e8f0'/%3E%3Ccircle cx='150' cy='120' r='60' fill='%2394a3b8'/%3E%3Cpath d='M55 340c10-80 55-110 95-110s85 30 95 110' fill='%2394a3b8'/%3E%3C/svg%3E">
+
+</div>
+
+
+<div
+id="previewName"
+class="personal-name">
+Saksham Shrestha
+</div>
+
+<div
+id="previewProfession"
+class="personal-role">
+Software Developer
+</div>
+
+<div
+id="previewPersonalId"
+class="personal-number">
+ID: PID-001
+</div>
+
+
+<div class="front-info">
+
+<div class="issue-info">
+
+<div>
+DOB:
+<span id="previewDob">—</span>
+</div>
+
+<div>
+Blood:
+<span id="previewBlood">—</span>
+</div>
+
+<div>
+Valid:
+<span id="previewExpiry">—</span>
+</div>
+
+</div>
+
+
+<div class="front-qr">
+
+<div id="qrFront"></div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+
+<!-- BACK CARD -->
+
+<div
+id="backCard"
+class="id-card back-card">
+
+<div
+id="backTop"
+class="back-top">
+
+<div class="circle one"></div>
+
+<div class="back-brand">
+
+<img
+id="backLogo"
+class="back-logo">
+
+<div
+id="backBrandName"
+class="back-brand-name">
+PERSONAL ID CARD
+</div>
+
+</div>
+
+</div>
+
+
+<div class="back-body">
+
+<div class="back-heading">
+PERSONAL INFORMATION
+</div>
+
+
+<div class="info-list">
+
+
+<div class="info-row">
+
+<div class="info-icon">
+👤
+</div>
+
+<div class="info-text">
+
+<span class="info-label">
+FULL NAME
+</span>
+
+<span id="backName">
+Saksham Shrestha
+</span>
+
+</div>
+
+</div>
+
+
+<div class="info-row">
+
+<div class="info-icon">
+🆔
+</div>
+
+<div class="info-text">
+
+<span class="info-label">
+PERSONAL ID
+</span>
+
+<span id="backId">
+PID-001
+</span>
+
+</div>
+
+</div>
+
+
+<div class="info-row">
+
+<div class="info-icon">
+🎂
+</div>
+
+<div class="info-text">
+
+<span class="info-label">
+DATE OF BIRTH
+</span>
+
+<span id="backDob">
+—
+</span>
+
+</div>
+
+</div>
+
+
+<div class="info-row">
+
+<div class="info-icon">
+⚧
+</div>
+
+<div class="info-text">
+
+<span class="info-label">
+GENDER
+</span>
+
+<span id="backGender">
+Male
+</span>
+
+</div>
+
+</div>
+
+
+<div class="info-row">
+
+<div class="info-icon">
+📞
+</div>
+
+<div class="info-text">
+
+<span class="info-label">
+PHONE
+</span>
+
+<span id="backPhone">
++977 98XXXXXXXX
+</span>
+
+</div>
+
+</div>
+
+
+<div class="info-row">
+
+<div class="info-icon">
+✉️
+</div>
+
+<div class="info-text">
+
+<span class="info-label">
+EMAIL
+</span>
+
+<span id="backEmail">
+saksham@example.com
+</span>
+
+</div>
+
+</div>
+
+
+<div class="info-row">
+
+<div class="info-icon">
+📍
+</div>
+
+<div class="info-text">
+
+<span class="info-label">
+ADDRESS
+</span>
+
+<span id="backAddress">
+Lalitpur, Nepal
+</span>
+
+</div>
+
+</div>
+
+
+<div class="info-row">
+
+<div class="info-icon">
+🌐
+</div>
+
+<div class="info-text">
+
+<span class="info-label">
+WEBSITE
+</span>
+
+<a
+id="backWebsite"
+class="website-link"
+href="https://sakshamstha.com.np"
+target="_blank"
+rel="noopener noreferrer">
+https://sakshamstha.com.np
+</a>
+
+</div>
+
+</div>
+
+</div>
+
+
+<div class="back-note">
+
+<strong>DOCUMENT QR</strong>
+<br>
+
+Scan the QR code to open the protected document viewer.
+
+<br><br>
+
+<span id="previewReturn">
+If this card is found, please contact the card holder using the information provided.
+</span>
+
+<br><br>
+
+<span id="previewAdditional">
+This card contains personal identification information. Please handle responsibly.
+</span>
+
+</div>
+
+
+<div class="back-qr">
+
+<div class="back-qr-label">
+SCAN TO VIEW DRIVING LICENCE + NATIONAL ID
+</div>
+
+<div class="back-qr-box">
+
+<div id="qrBack"></div>
+
+</div>
+
+</div>
+
+</div>
+
+
+<div class="back-footer">
+PERSONAL ID • KEEP THIS CARD SAFE
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+
+<!-- STATUS -->
+
+<div id="status" class="status"></div>
+
+
+<!-- ================= DOCUMENT VIEWER ================= -->
+
+<div id="documentViewer">
+
+<div class="viewer-header">
+
+<div class="viewer-title">
+
+<div class="viewer-title-icon">
+🔐
+</div>
+
+<div>
+
+<h2>
+Private Document Viewer
+</h2>
+
+<p>
+Only authorized identity documents are displayed
+</p>
+
+</div>
+
+</div>
+
+<button
+class="btn-light"
+onclick="closeDocumentViewer()">
+✕ Close
+</button>
+
+</div>
+
+
+<div class="viewer-content">
+
+
+<div class="viewer-security">
+
+🔒 <strong>Private document area</strong><br>
+
+This viewer is designed to display only the documents selected
+for this ID card: Driving Licence and National ID.
+
+</div>
+
+
+<div class="viewer-doc">
+
+<h3>
+🚗 Driving Licence
+</h3>
+
+<div
+id="viewerLicense"
+class="viewer-image-wrap">
+
+<div class="no-document">
+No Driving Licence image available.
+</div>
+
+</div>
+
+</div>
+
+
+<div class="viewer-doc">
+
+<h3>
+🪪 National ID
+</h3>
+
+<div
+id="viewerNational"
+class="viewer-image-wrap">
+
+<div class="no-document">
+No National ID image available.
+</div>
+
+</div>
+
+</div>
+
+
+<div style="text-align:center;color:#94a3b8;font-size:10px;padding:10px;">
+
+Personal Document Viewer<br>
+Do not share identity documents publicly.
+
+</div>
+
+</div>
+
+</div>
+
+
+<!-- ================= PIN MODAL ================= -->
+
+<div id="pinModal">
+
+<div class="pin-modal">
+
+<div class="pin-modal-icon">
+🔐
+</div>
+
+<h2>
+Protected Documents
+</h2>
+
+<p>
+Enter your document PIN to view the Driving Licence
+and National ID.
+</p>
+
+<input
+id="viewerPin"
+type="password"
+inputmode="numeric"
+maxlength="8"
+placeholder="PIN">
+
+<div
+id="pinError"
+class="pin-error">
+Incorrect PIN. Please try again.
+</div>
+
+<br>
+
+<div class="button-row">
+
+<button
+class="btn-primary"
+onclick="verifyViewerPin()">
+🔓 Unlock
+</button>
+
+<button
+class="btn-light"
+onclick="closePinModal()">
+Cancel
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+
+<script>
+
+/* =========================================================
+   GLOBAL VARIABLES
+========================================================= */
+
+let logoData = "";
+let photoData = "";
+
+let licenseData = "";
+let nationalData = "";
+
+let currentTemplate = 1;
+let currentZoom = 1;
+
+const $ = id => document.getElementById(id);
+
+
+/* =========================================================
+   DATE
+========================================================= */
+
+function formatDate(value){
+
+    if(!value) return "—";
+
+    const d = new Date(value);
+
+    if(isNaN(d)) return value;
+
+    return d.toLocaleDateString(
+        "en-US",
+        {
+            year:"numeric",
+            month:"short",
+            day:"numeric"
+        }
+    );
+}
+
+
+function setDefaultDates(){
+
+    const today = new Date();
+
+    $("issueDate").value =
+        today.toISOString().split("T")[0];
+
+    const expiry = new Date(today);
+
+    expiry.setFullYear(
+        expiry.getFullYear() + 5
+    );
+
+    $("expiryDate").value =
+        expiry.toISOString().split("T")[0];
+
+    const dob = new Date(today);
+
+    dob.setFullYear(
+        dob.getFullYear() - 20
+    );
+
+    $("dob").value =
+        dob.toISOString().split("T")[0];
+}
+
+
+/* =========================================================
+   WEBSITE
+========================================================= */
+
+function normalizeWebsite(url){
+
+    url = String(url || "").trim();
+
+    if(!url) return "";
+
+    if(
+        !url.startsWith("http://") &&
+        !url.startsWith("https://")
+    ){
+        url = "https://" + url;
+    }
+
+    return url;
+}
+
+
+function openWebsite(){
+
+    const website =
+        normalizeWebsite(
+            $("website").value
+        );
+
+    if(!website){
+
+        showStatus(
+            "Enter a website URL first"
+        );
+
+        return;
+    }
+
+    try{
+
+        const parsed =
+            new URL(website);
+
+        if(
+            parsed.protocol !== "http:" &&
+            parsed.protocol !== "https:"
+        ){
+            throw new Error();
+        }
+
+        window.open(
+            parsed.href,
+            "_blank",
+            "noopener,noreferrer"
+        );
+
+    }catch(error){
+
+        showStatus(
+            "Please enter a valid website URL"
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   QR DATA
+=========================================================
+
+IMPORTANT:
+The QR contains a local viewer route with a token.
+
+For a real public deployment this should be replaced
+with a secure server URL.
+
+========================================================= */
+
+function getQRData(){
+
+    const destination =
+        $("qrDestination").value.trim();
+
+    if(/^https?:\/\//i.test(destination)){
+
+        return destination;
+
+    }
+
+    /* A recognizable fallback until a public URL is added. */
+    return "https://example.com";
+}
+
+
+/* =========================================================
+   QR
+========================================================= */
+
+function updateQR(){
+
+    if(typeof QRCode === "undefined")
+        return;
+
+    $("qrFront").innerHTML = "";
+    $("qrBack").innerHTML = "";
+
+    const data = getQRData();
+
+    new QRCode(
+        $("qrFront"),
+        {
+            text:data,
+            width:55,
+            height:55,
+            correctLevel:QRCode.CorrectLevel.M
+        }
+    );
+
+    new QRCode(
+        $("qrBack"),
+        {
+            text:data,
+            width:70,
+            height:70,
+            correctLevel:QRCode.CorrectLevel.M
+        }
+    );
+}
+
+
+/* =========================================================
+   PREVIEW
+========================================================= */
+
+function updatePreview(){
+
+    const name =
+        $("fullName").value ||
+        "Your Name";
+
+    const id =
+        $("personalId").value ||
+        "PID-001";
+
+    const profession =
+        $("profession").value ||
+        "Profession";
+
+
+    $("previewTitle").textContent =
+        $("cardTitle").value ||
+        "PERSONAL IDENTIFICATION CARD";
+
+
+    $("previewSubtitle").textContent =
+        $("cardSubtitle").value ||
+        "PERSONAL IDENTITY • DOCUMENT ACCESS";
+
+
+    $("previewName").textContent =
+        name;
+
+
+    $("previewProfession").textContent =
+        profession;
+
+
+    $("previewPersonalId").textContent =
+        "ID: " + id;
+
+
+    $("previewDob").textContent =
+        formatDate(
+            $("dob").value
+        );
+
+
+    $("previewBlood").textContent =
+        $("bloodGroup").value ||
+        "—";
+
+
+    $("previewExpiry").textContent =
+        formatDate(
+            $("expiryDate").value
+        );
+
+
+    $("backBrandName").textContent =
+        $("cardTitle").value ||
+        "PERSONAL ID CARD";
+
+
+    $("backName").textContent =
+        name;
+
+
+    $("backId").textContent =
+        id;
+
+
+    $("backDob").textContent =
+        formatDate(
+            $("dob").value
+        );
+
+
+    $("backGender").textContent =
+        $("gender").value;
+
+
+    $("backPhone").textContent =
+        $("phone").value ||
+        "Not provided";
+
+
+    $("backEmail").textContent =
+        $("email").value ||
+        "Not provided";
+
+
+    $("backAddress").textContent =
+        $("address").value ||
+        "Not provided";
+
+
+    const website =
+        normalizeWebsite(
+            $("website").value
+        );
+
+
+    const websiteElement =
+        $("backWebsite");
+
+
+    if(website){
+
+        websiteElement.textContent =
+            website;
+
+        websiteElement.href =
+            website;
+
+    }else{
+
+        websiteElement.textContent =
+            "Not provided";
+
+        websiteElement.removeAttribute(
+            "href"
+        );
+
+    }
+
+
+    $("previewReturn").textContent =
+        $("returnMessage").value ||
+        "";
+
+
+    $("previewAdditional").textContent =
+        $("additionalInfo").value ||
+        "";
+
+
+    updateQR();
+}
+
+
+/* =========================================================
+   PHOTO
+========================================================= */
+
+function uploadPhoto(event){
+
+    const file =
+        event.target.files[0];
+
+    if(!file)
+        return;
+
+    if(!file.type.startsWith("image/")){
+
+        showStatus(
+            "Please select an image"
+        );
+
+        return;
+    }
+
+    const reader =
+        new FileReader();
+
+
+    reader.onload = function(e){
+
+        photoData =
+            e.target.result;
+
+        $("previewPhoto").src =
+            photoData;
+
+        showStatus(
+            "Profile photo uploaded"
+        );
+
+    };
+
+
+    reader.readAsDataURL(file);
+}
+
+
+/* =========================================================
+   LOGO
+========================================================= */
+
+function uploadLogo(event){
+
+    const file =
+        event.target.files[0];
+
+    if(!file)
+        return;
+
+    if(!file.type.startsWith("image/")){
+
+        showStatus(
+            "Please select an image"
+        );
+
+        return;
+    }
+
+    const reader =
+        new FileReader();
+
+
+    reader.onload = function(e){
+
+        logoData =
+            e.target.result;
+
+
+        $("frontLogo").src =
+            logoData;
+
+        $("backLogo").src =
+            logoData;
+
+
+        $("frontLogo").style.display =
+            "block";
+
+        $("backLogo").style.display =
+            "block";
+
+
+        showStatus(
+            "Logo uploaded"
+        );
+
+    };
+
+
+    reader.readAsDataURL(file);
+}
+
+
+/* =========================================================
+   DOCUMENT UPLOAD
+========================================================= */
+
+function uploadDocument(event,type){
+
+    const file =
+        event.target.files[0];
+
+    if(!file)
+        return;
+
+
+    if(!file.type.startsWith("image/")){
+
+        showStatus(
+            "Please select an image file"
+        );
+
+        return;
+    }
+
+
+    /*
+      Limit to 10 MB for this local prototype.
+    */
+
+    if(file.size > 10 * 1024 * 1024){
+
+        showStatus(
+            "Image must be smaller than 10 MB"
+        );
+
+        return;
+    }
+
+
+    const reader =
+        new FileReader();
+
+
+    reader.onload = function(e){
+
+        if(type === "license"){
+
+            licenseData =
+                e.target.result;
+
+            $("licenseImage").src =
+                licenseData;
+
+            $("licensePreview").style.display =
+                "block";
+
+            $("licenseStatus").textContent =
+                "Uploaded";
+
+            $("licenseStatus").style.color =
+                "#16a34a";
+
+            showStatus(
+                "Driving Licence uploaded"
+            );
+
+        }
+
+
+        if(type === "national"){
+
+            nationalData =
+                e.target.result;
+
+            $("nationalImage").src =
+                nationalData;
+
+            $("nationalPreview").style.display =
+                "block";
+
+            $("nationalStatus").textContent =
+                "Uploaded";
+
+            $("nationalStatus").style.color =
+                "#16a34a";
+
+            showStatus(
+                "National ID uploaded"
+            );
+
+        }
+
+        updateQR();
+
+    };
+
+
+    reader.readAsDataURL(file);
+}
+
+
+/* =========================================================
+   REMOVE DOCUMENT
+========================================================= */
+
+function removeDocument(type){
+
+    if(type === "license"){
+
+        licenseData = "";
+
+        $("licenseInput").value = "";
+
+        $("licensePreview").style.display =
+            "none";
+
+        $("licenseStatus").textContent =
+            "Not uploaded";
+
+        $("licenseStatus").style.color =
+            "#64748b";
+
+        showStatus(
+            "Driving Licence removed"
+        );
+
+    }
+
+
+    if(type === "national"){
+
+        nationalData = "";
+
+        $("nationalInput").value = "";
+
+        $("nationalPreview").style.display =
+            "none";
+
+        $("nationalStatus").textContent =
+            "Not uploaded";
+
+        $("nationalStatus").style.color =
+            "#64748b";
+
+        showStatus(
+            "National ID removed"
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   TEMPLATES
+========================================================= */
+
+const templates = {
+
+    1:["#2563eb","#06b6d4"],
+
+    2:["#111827","#475569"],
+
+    3:["#7c3aed","#ec4899"],
+
+    4:["#059669","#14b8a6"],
+
+    5:["#ea580c","#f59e0b"],
+
+    6:["#be123c","#fb7185"]
+
+};
+
+
+function setTemplate(
+    number,
+    element
+){
+
+    currentTemplate =
+        number;
+
+
+    document
+        .querySelectorAll(".template")
+        .forEach(
+            el =>
+                el.classList.remove("active")
+        );
+
+
+    element.classList.add(
+        "active"
+    );
+
+
+    const colors =
+        templates[number];
+
+
+    $("primaryColor").value =
+        colors[0];
+
+    $("secondaryColor").value =
+        colors[1];
+
+
+    applyColors(
+        colors[0],
+        colors[1]
+    );
+}
+
+
+function applyCustomColors(){
+
+    applyColors(
+        $("primaryColor").value,
+        $("secondaryColor").value
+    );
+
+}
+
+
+function applyColors(
+    primary,
+    secondary
+){
+
+    const gradient =
+        `linear-gradient(135deg,${primary},${secondary})`;
+
+
+    $("frontGradient").style.background =
+        gradient;
+
+
+    $("backTop").style.background =
+        gradient;
+
+}
+
+
+/* =========================================================
+   ZOOM
+========================================================= */
+
+function changeZoom(amount){
+
+    currentZoom += amount;
+
+    currentZoom =
+        Math.max(
+            .5,
+            Math.min(
+                1.5,
+                currentZoom
+            )
+        );
+
+
+    $("cards").style.transform =
+        `scale(${currentZoom})`;
+}
+
+
+function resetZoom(){
+
+    currentZoom = 1;
+
+    $("cards").style.transform =
+        "scale(1)";
+}
+
+
+/* =========================================================
+   COLLECT DATA
+========================================================= */
+
+function collectData(){
+
+    return {
+
+        fullName:$("fullName").value,
+
+        personalId:$("personalId").value,
+
+        profession:$("profession").value,
+
+        dob:$("dob").value,
+
+        gender:$("gender").value,
+
+        bloodGroup:$("bloodGroup").value,
+
+        nationality:$("nationality").value,
+
+        phone:$("phone").value,
+
+        email:$("email").value,
+
+        address:$("address").value,
+
+        website:$("website").value,
+
+        fatherName:$("fatherName").value,
+
+        motherName:$("motherName").value,
+
+        emergency:$("emergency").value,
+
+        emergencyPhone:$("emergencyPhone").value,
+
+        issueDate:$("issueDate").value,
+
+        expiryDate:$("expiryDate").value,
+
+        cardTitle:$("cardTitle").value,
+
+        cardSubtitle:$("cardSubtitle").value,
+
+        returnMessage:$("returnMessage").value,
+
+        additionalInfo:$("additionalInfo").value,
+
+        primaryColor:$("primaryColor").value,
+
+        secondaryColor:$("secondaryColor").value,
+
+        template:currentTemplate,
+
+        logoData:logoData,
+
+        photoData:photoData,
+
+        licenseData:licenseData,
+
+        nationalData:nationalData,
+
+        qrDestination:$("qrDestination").value,
+
+        documentPin:$("documentPin").value,
+
+        savedAt:new Date().toISOString()
+
+    };
+
+}
+
+
+/* =========================================================
+   SAVE
+========================================================= */
+
+function saveCard(){
+
+    const data =
+        collectData();
+
+
+    let cards =
+        JSON.parse(
+            localStorage.getItem(
+                "personalIdCards"
+            ) || "[]"
+        );
+
+
+    cards.push(data);
+
+
+    localStorage.setItem(
+        "personalIdCards",
+        JSON.stringify(cards)
+    );
+
+
+    renderSavedCards();
+
+
+    showStatus(
+        "Personal ID card saved"
+    );
+
+}
+
+
+/* =========================================================
+   SAVED CARDS
+========================================================= */
+
+function renderSavedCards(){
+
+    const list =
+        $("savedList");
+
+
+    list.innerHTML = "";
+
+
+    const cards =
+        JSON.parse(
+            localStorage.getItem(
+                "personalIdCards"
+            ) || "[]"
+        );
+
+
+    if(cards.length === 0){
+
+        list.innerHTML = `
+            <div style="
+                text-align:center;
+                padding:20px;
+                color:#94a3b8;
+                font-size:11px;
+            ">
+                No saved cards yet.
+            </div>
+        `;
+
+        return;
+    }
+
+
+    cards
+        .slice()
+        .reverse()
+        .forEach(
+            (card,reverseIndex)=>{
+
+                const index =
+                    cards.length -
+                    1 -
+                    reverseIndex;
+
+
+                const item =
+                    document.createElement(
+                        "div"
+                    );
+
+
+                item.className =
+                    "saved-card";
+
+
+                item.innerHTML = `
+
+                    <div>
+
+                        <strong>
+                            ${escapeHTML(card.fullName)}
+                        </strong>
+
+                        <small>
+                            ${escapeHTML(card.personalId)}
+                            •
+                            ${escapeHTML(card.profession)}
+                        </small>
+
+                    </div>
+
+                    <div class="saved-actions">
+
+                        <button
+                            class="btn-primary"
+                            onclick="loadCard(${index})">
+                            Load
+                        </button>
+
+                        <button
+                            class="btn-danger"
+                            onclick="deleteCard(${index})">
+                            Delete
+                        </button>
+
+                    </div>
+
+                `;
+
+
+                list.appendChild(item);
+
+            }
+        );
+
+}
+
+
+/* =========================================================
+   LOAD CARD
+========================================================= */
+
+function loadCard(index){
+
+    const cards =
+        JSON.parse(
+            localStorage.getItem(
+                "personalIdCards"
+            ) || "[]"
+        );
+
+
+    const data =
+        cards[index];
+
+
+    if(!data)
+        return;
+
+
+    const fields = [
+
+        "fullName",
+        "personalId",
+        "profession",
+        "dob",
+        "gender",
+        "bloodGroup",
+        "nationality",
+        "phone",
+        "email",
+        "address",
+        "website",
+        "fatherName",
+        "motherName",
+        "emergency",
+        "emergencyPhone",
+        "issueDate",
+        "expiryDate",
+        "cardTitle",
+        "cardSubtitle",
+        "returnMessage",
+        "additionalInfo",
+        "primaryColor",
+        "secondaryColor",
+        "qrDestination",
+        "documentPin"
+
+    ];
+
+
+    fields.forEach(
+        id => {
+
+            if(
+                data[id] !== undefined &&
+                $(id)
+            ){
+
+                $(id).value =
+                    data[id];
+
+            }
+
+        }
+    );
+
+
+    logoData =
+        data.logoData || "";
+
+    photoData =
+        data.photoData || "";
+
+    licenseData =
+        data.licenseData || "";
+
+    nationalData =
+        data.nationalData || "";
+
+
+    /* PHOTO */
+
+    if(photoData){
+
+        $("previewPhoto").src =
+            photoData;
+
+    }
+
+
+    /* LOGO */
+
+    if(logoData){
+
+        $("frontLogo").src =
+            logoData;
+
+        $("backLogo").src =
+            logoData;
+
+        $("frontLogo").style.display =
+            "block";
+
+        $("backLogo").style.display =
+            "block";
+
+    }else{
+
+        $("frontLogo").style.display =
+            "none";
+
+        $("backLogo").style.display =
+            "none";
+
+    }
+
+
+    /* LICENSE */
+
+    if(licenseData){
+
+        $("licenseImage").src =
+            licenseData;
+
+        $("licensePreview").style.display =
+            "block";
+
+        $("licenseStatus").textContent =
+            "Uploaded";
+
+        $("licenseStatus").style.color =
+            "#16a34a";
+
+    }else{
+
+        $("licensePreview").style.display =
+            "none";
+
+        $("licenseStatus").textContent =
+            "Not uploaded";
+
+    }
+
+
+    /* NATIONAL ID */
+
+    if(nationalData){
+
+        $("nationalImage").src =
+            nationalData;
+
+        $("nationalPreview").style.display =
+            "block";
+
+        $("nationalStatus").textContent =
+            "Uploaded";
+
+        $("nationalStatus").style.color =
+            "#16a34a";
+
+    }else{
+
+        $("nationalPreview").style.display =
+            "none";
+
+        $("nationalStatus").textContent =
+            "Not uploaded";
+
+    }
+
+
+    currentTemplate =
+        data.template || 1;
+
+
+    document
+        .querySelectorAll(".template")
+        .forEach(
+            (el,index)=>{
+
+                el.classList.toggle(
+                    "active",
+                    index + 1 ===
+                    currentTemplate
+                );
+
+            }
+        );
+
+
+    applyColors(
+        $("primaryColor").value,
+        $("secondaryColor").value
+    );
+
+
+    updatePreview();
+
+
+    showStatus(
+        "Saved card loaded"
+    );
+
+}
+
+
+/* =========================================================
+   DELETE
+========================================================= */
+
+function deleteCard(index){
+
+    if(
+        !confirm(
+            "Delete this personal ID card?"
+        )
+    )
+        return;
+
+
+    let cards =
+        JSON.parse(
+            localStorage.getItem(
+                "personalIdCards"
+            ) || "[]"
+        );
+
+
+    cards.splice(
+        index,
+        1
+    );
+
+
+    localStorage.setItem(
+        "personalIdCards",
+        JSON.stringify(cards)
+    );
+
+
+    renderSavedCards();
+
+
+    showStatus(
+        "Saved card deleted"
+    );
+
+}
+
+
+/* =========================================================
+   NEW CARD
+========================================================= */
+
+function newCard(){
+
+    $("fullName").value =
+        "Your Name";
+
+    $("personalId").value =
+        "PID-001";
+
+    $("profession").value =
+        "Profession";
+
+    $("gender").value =
+        "Male";
+
+    $("bloodGroup").value =
+        "";
+
+    $("nationality").value =
+        "Nepali";
+
+    $("phone").value =
+        "+977 98XXXXXXXX";
+
+    $("email").value =
+        "example@email.com";
+
+    $("address").value =
+        "Lalitpur, Nepal";
+
+    $("website").value =
+        "https://example.com";
+
+    $("fatherName").value =
+        "";
+
+    $("motherName").value =
+        "";
+
+    $("emergency").value =
+        "";
+
+    $("emergencyPhone").value =
+        "";
+
+    $("cardTitle").value =
+        "PERSONAL IDENTIFICATION CARD";
+
+    $("cardSubtitle").value =
+        "PERSONAL IDENTITY • DOCUMENT ACCESS";
+
+    $("returnMessage").value =
+        "If this card is found, please contact the card holder using the information provided.";
+
+    $("additionalInfo").value =
+        "This card contains personal identification information. Please handle responsibly.";
+
+    $("documentPin").value =
+        "";
+
+    $("qrDestination").value =
+        "";
+
+
+    setDefaultDates();
+
+
+    logoData = "";
+    photoData = "";
+    licenseData = "";
+    nationalData = "";
+
+
+    $("frontLogo").style.display =
+        "none";
+
+    $("backLogo").style.display =
+        "none";
+
+
+    $("licensePreview").style.display =
+        "none";
+
+    $("nationalPreview").style.display =
+        "none";
+
+
+    $("licenseInput").value =
+        "";
+
+    $("nationalInput").value =
+        "";
+
+
+    $("licenseStatus").textContent =
+        "Not uploaded";
+
+    $("nationalStatus").textContent =
+        "Not uploaded";
+
+
+    $("primaryColor").value =
+        "#2563eb";
+
+    $("secondaryColor").value =
+        "#06b6d4";
+
+
+    currentTemplate = 1;
+
+
+    document
+        .querySelectorAll(".template")
+        .forEach(
+            (el,index)=>{
+
+                el.classList.toggle(
+                    "active",
+                    index === 0
+                );
+
+            }
+        );
+
+
+    applyColors(
+        "#2563eb",
+        "#06b6d4"
+    );
+
+
+    updatePreview();
+
+
+    showStatus(
+        "New personal ID card created"
+    );
+
+}
+
+
+/* =========================================================
+   CLEAR SAVED
+========================================================= */
+
+function clearSaved(){
+
+    if(
+        !confirm(
+            "Delete all saved personal ID cards?"
+        )
+    )
+        return;
+
+
+    localStorage.removeItem(
+        "personalIdCards"
+    );
+
+
+    renderSavedCards();
+
+
+    showStatus(
+        "All saved cards deleted"
+    );
+
+}
+
+
+/* =========================================================
+   DOCUMENT VIEWER
+========================================================= */
+
+function openDocumentViewer(){
+
+    /*
+      Load current local documents.
+    */
+
+    if(!licenseData && !nationalData){
+
+        showStatus(
+            "No documents uploaded"
+        );
+
+        return;
+
+    }
+
+
+    if(licenseData){
+
+        $("viewerLicense").innerHTML = `
+
+            <img
+                src="${licenseData}"
+                alt="Driving Licence">
+
+        `;
+
+    }else{
+
+        $("viewerLicense").innerHTML = `
+
+            <div class="no-document">
+                No Driving Licence image uploaded.
+            </div>
+
+        `;
+
+    }
+
+
+    if(nationalData){
+
+        $("viewerNational").innerHTML = `
+
+            <img
+                src="${nationalData}"
+                alt="National ID">
+
+        `;
+
+    }else{
+
+        $("viewerNational").innerHTML = `
+
+            <div class="no-document">
+                No National ID image uploaded.
+            </div>
+
+        `;
+
+    }
+
+
+    $("documentViewer").style.display =
+        "block";
+
+
+    document.body.style.overflow =
+        "hidden";
+
+}
+
+
+/* =========================================================
+   CLOSE VIEWER
+========================================================= */
+
+function closeDocumentViewer(){
+
+    $("documentViewer").style.display =
+        "none";
+
+    document.body.style.overflow =
+        "";
+
+}
+
+
+/* =========================================================
+   PIN MODAL
+========================================================= */
+
+function openPinModal(){
+
+    $("viewerPin").value =
+        "";
+
+    $("pinError").style.display =
+        "none";
+
+    $("pinModal").style.display =
+        "flex";
+
+    setTimeout(
+        ()=>{
+            $("viewerPin").focus();
+        },
+        100
+    );
+
+}
+
+
+function closePinModal(){
+
+    $("pinModal").style.display =
+        "none";
+
+}
+
+
+function verifyViewerPin(){
+
+    const entered =
+        $("viewerPin").value;
+
+
+    const savedPin =
+        $("documentPin").value;
+
+
+    /*
+      If no PIN is configured,
+      allow viewer access.
+
+      For better security in production,
+      require a PIN and server authentication.
+    */
+
+    if(
+        !savedPin ||
+        entered === savedPin
+    ){
+
+        closePinModal();
+
+        openDocumentViewer();
+
+        return;
+
+    }
+
+
+    $("pinError").style.display =
+        "block";
+
+}
+
+
+/* =========================================================
+   HASH ROUTE
+========================================================= */
+
+function checkDocumentRoute(){
+
+    if(
+        window.location.hash ===
+        "#documents"
+    ){
+
+        /*
+          In this single-file/localStorage version,
+          the scanned page is on the same browser
+          and therefore has access to the saved local
+          documents.
+
+          Ask for PIN before showing documents.
+        */
+
+        openPinModal();
+
+    }
+
+}
+
+
+window.addEventListener(
+    "hashchange",
+    checkDocumentRoute
+);
+
+
+/* =========================================================
+   DOWNLOAD FRONT
+========================================================= */
+
+async function downloadFront(){
+
+    if(
+        typeof html2canvas ===
+        "undefined"
+    ){
+
+        showStatus(
+            "Image export library not loaded"
+        );
+
+        return;
+
+    }
+
+
+    showStatus(
+        "Preparing front PNG..."
+    );
+
+
+    try{
+
+        const canvas =
+            await html2canvas(
+                $("frontCard"),
+                {
+                    scale:3,
+                    useCORS:true,
+                    backgroundColor:null
+                }
+            );
+
+
+        const link =
+            document.createElement(
+                "a"
+            );
+
+
+        link.download =
+            sanitizeFilename(
+                $("fullName").value ||
+                "personal-id"
+            ) +
+            "-front.png";
+
+
+        link.href =
+            canvas.toDataURL(
+                "image/png"
+            );
+
+
+        link.click();
+
+
+        showStatus(
+            "Front PNG downloaded"
+        );
+
+
+    }catch(error){
+
+        console.error(error);
+
+        showStatus(
+            "Could not create front PNG"
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   DOWNLOAD BACK
+========================================================= */
+
+async function downloadBack(){
+
+    if(
+        typeof html2canvas ===
+        "undefined"
+    ){
+
+        showStatus(
+            "Image export library not loaded"
+        );
+
+        return;
+
+    }
+
+
+    showStatus(
+        "Preparing back PNG..."
+    );
+
+
+    try{
+
+        const canvas =
+            await html2canvas(
+                $("backCard"),
+                {
+                    scale:3,
+                    useCORS:true,
+                    backgroundColor:null
+                }
+            );
+
+
+        const link =
+            document.createElement(
+                "a"
+            );
+
+
+        link.download =
+            sanitizeFilename(
+                $("fullName").value ||
+                "personal-id"
+            ) +
+            "-back.png";
+
+
+        link.href =
+            canvas.toDataURL(
+                "image/png"
+            );
+
+
+        link.click();
+
+
+        showStatus(
+            "Back PNG downloaded"
+        );
+
+
+    }catch(error){
+
+        console.error(error);
+
+        showStatus(
+            "Could not create back PNG"
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   PRINT
+========================================================= */
+
+function printCard(){
+
+    window.print();
+
+}
+
+
+/* =========================================================
+   STATUS
+========================================================= */
+
+let statusTimer;
+
+
+function showStatus(message){
+
+    const status =
+        $("status");
+
+
+    status.textContent =
+        message;
+
+
+    status.classList.add(
+        "show"
+    );
+
+
+    clearTimeout(
+        statusTimer
+    );
+
+
+    statusTimer =
+        setTimeout(
+            ()=>{
+                status.classList.remove(
+                    "show"
+                );
+            },
+            2500
+        );
+
+}
+
+
+/* =========================================================
+   SECURITY HELPERS
+========================================================= */
+
+function escapeHTML(value){
+
+    return String(value || "")
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+        .replace(
+            /</g,
+            "&lt;"
+        )
+        .replace(
+            />/g,
+            "&gt;"
+        )
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+        .replace(
+            /'/g,
+            "&#039;"
+        );
+
+}
+
+
+function sanitizeFilename(name){
+
+    return String(name)
+        .replace(
+            /[^a-z0-9_\-]/gi,
+            "_"
+        );
+
+}
+
+
+/* =========================================================
+   KEYBOARD
+========================================================= */
+
+$("viewerPin").addEventListener(
+    "keydown",
+    function(event){
+
+        if(event.key === "Enter"){
+
+            verifyViewerPin();
+
+        }
+
+        if(event.key === "Escape"){
+
+            closePinModal();
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   INITIALIZATION
+========================================================= */
+
+setDefaultDates();
+
+applyColors(
+    "#2563eb",
+    "#06b6d4"
+);
+
+updatePreview();
+
+renderSavedCards();
+
+checkDocumentRoute();
+
+</script>
+
+</body>
+</html>
+
